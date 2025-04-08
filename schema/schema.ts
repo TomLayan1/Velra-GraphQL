@@ -1,5 +1,5 @@
 import { GraphQLSchema } from 'graphql';
-import { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLFloat, GraphQLInt } from 'graphql';
+import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList, GraphQLFloat, GraphQLInt } from 'graphql';
 import _ from 'lodash'
 
 // Sample data
@@ -68,7 +68,7 @@ let categories = _.uniqBy(products.map(p => p.category), 'id');
 const CategoryType  = new GraphQLObjectType({
   name: 'Categories',
   fields: () => ({
-    id: { type: GraphQLString },
+    id: { type: GraphQLID },
     name: { type: GraphQLString }
   }),
 });
@@ -76,12 +76,13 @@ const CategoryType  = new GraphQLObjectType({
 const ProductsType = new GraphQLObjectType({
   name: 'Products',
   fields: () => ({
-    id: { type: GraphQLString },
+    id: { type: GraphQLID },
     name: { type: GraphQLString },
     image: { type: GraphQLString },
     price: { type: GraphQLFloat },
     category: { type: CategoryType },
-    details: { type: GraphQLString }
+    details: { type: GraphQLString },
+    quantity: { type: GraphQLInt}
   }),
 });
 
@@ -97,7 +98,7 @@ const CartItemType = new GraphQLObjectType({
 const CartType = new GraphQLObjectType({
   name: 'Cart',
   fields: () => ({
-    id: { type: GraphQLString },
+    id: { type: GraphQLID },
     items: { type: new GraphQLList(CartItemType) },
     total: { type: GraphQLFloat }
   }),
@@ -115,7 +116,7 @@ const RootQuery = new GraphQLObjectType({
     },
     product: {
       type: ProductsType,
-      args: { id: { type: GraphQLString }},
+      args: { id: { type: GraphQLID }},
       resolve(parent, args) {
         // Function to get data from db
         return _.find(products, {id: args?.id})
@@ -129,7 +130,7 @@ const RootQuery = new GraphQLObjectType({
     },
     productsByCategory: {
       type: new GraphQLList(ProductsType),
-      args: { categoryId: {type: GraphQLString}},
+      args: { categoryId: { type: GraphQLID }},
       resolve(parent, args) {
         return products?.filter(p => p.category?.id === args?.id)
       }

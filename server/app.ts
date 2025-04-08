@@ -17,6 +17,6 @@ app.use('/graphql', graphqlHTTP({
 }))
 
 // Tell the app to listen to a port e.g port 4000 and a callback function that will be executed when the app starts listening to port 4000
-app.listen(4000, () => {
+app.listen(5000, () => {
   console.log('Now listening for request on port 4000')
 })
