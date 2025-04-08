@@ -55,7 +55,7 @@ Server will run on: http://localhost:4000/graphql
 
 - Enable cart updates (add/remove items)
 
-- Connect to a real database (MongoDB, PostgreSQL)
+- Connect to a real database (MongoDB)
 
 - Build a frontend for interaction
 
