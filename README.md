@@ -2,7 +2,7 @@
 
 **Velra GraphQL** is a GraphQL-powered backend service for an e-commerce platform that enables dynamic querying of products, user registration, and personalized cart management.
 
-## 🚀 Features
+## Features
 
 - GraphQL API built with `express-graphql` and `graphql`
 - Query for products with rich details like name, price, image, and category
@@ -11,6 +11,7 @@
 - Clean and extensible codebase
 
 ## Project Structure
+```
 Velra-GraphQL/
 ├── node_modules/
 ├── images/
@@ -20,7 +21,7 @@ Velra-GraphQL/
 │   └── schema.ts
 ├── package.json
 └── README.md
-
+```
 
 ## Technologies Used
 
