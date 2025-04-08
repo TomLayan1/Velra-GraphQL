@@ -60,7 +60,6 @@ let products = [
   },
 ];
 
-
 // Extracted categories from products
 let categories = _.uniqBy(products.map(p => p.category), 'id');
 
@@ -118,6 +117,7 @@ const RootQuery = new GraphQLObjectType({
       type: ProductsType,
       args: { id: { type: GraphQLID }},
       resolve(parent, args) {
+        console.log(typeof(args?.id))
         // Function to get data from db
         return _.find(products, {id: args?.id})
       }
@@ -138,7 +138,92 @@ const RootQuery = new GraphQLObjectType({
   }
 });
 
+
+// Sample data for users
+let users = [
+  {
+    id: "1",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    location: "Lagos",
+    password: "12345678",
+    cart: {
+      id: "cart-1",
+      items: [
+        {
+          products: {
+            id: "2",
+            name: "Lamp Tool",
+            image: "http://localhost:4000/images/products/product2.jpg",
+            price: 35.0,
+            category: { id: "1", name: "Lamp" },
+            details: "A compact and multifunctional lamp with adjustable brightness. Great for workspaces, reading corners, or nightstands.",
+          },
+          quantity: 2,
+        },
+        {
+          products: {
+            id: "5",
+            name: "Stylish Chair",
+            image: "http://localhost:4000/images/products/product5.jpg",
+            price: 45.0,
+            category: { id: "1", name: "Chair" },
+            details: "Ergonomically designed stylish chair with a minimalist design. Ideal for offices, home desks, or lounges.",
+          },
+          quantity: 1,
+        },
+      ],
+      total: 115.0, // 2 * 35 + 1 * 45
+    },
+  },
+];
+
+// Create new users
+const UserType = new GraphQLObjectType({
+  name: "User",
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    email: { type: GraphQLString },
+    location: {type: GraphQLString },
+    cart: { type: CartType },
+  }),
+});
+
+const Mutation = new GraphQLObjectType({
+  name: "Mutation",
+  fields: {
+    registerUser: {
+      type: UserType,
+      args: {
+        name: { type: GraphQLString },
+        email: { type: GraphQLString },
+        location: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const newUser = {
+          id: String(users.length + 1),
+          name: args?.name,
+          email: args?.email,
+          location: args?.location,
+          password: args?.password,
+          cart: {
+            id: `cart-${users.length + 1}`,
+            items: [],
+            total: 0,
+          },
+        };
+        users.push(newUser);
+        return newUser;
+      },
+    },
+  },
+});
+
+
 // Export RootQuery
 export default new GraphQLSchema({
-  query: RootQuery
+  query: RootQuery,
+  mutation: Mutation
 });
