@@ -1,64 +1,7 @@
 import { GraphQLSchema } from 'graphql';
 import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList, GraphQLFloat, GraphQLInt } from 'graphql';
+import { products, users } from '../data';
 import _ from 'lodash'
-
-// Sample data
-let products = [
-  {
-    id: "1",
-    name: "Stackable Chair",
-    image: "http://localhost:4000/images/products/product1.jpg",
-    price: 87.00,
-    category: { id: "1", name: "Chair" },
-    details: "A sleek and modern stackable chair perfect for both indoor and outdoor settings. Lightweight yet sturdy, ideal for compact storage.",
-    quantity: 5
-  },
-  {
-    id: "2",
-    name: "Lamp Tool",
-    image: "http://localhost:4000/images/products/product2.jpg",
-    price: 35.00,
-    category: { id: "1", name: "Lamp" },
-    details: "A compact and multifunctional lamp with adjustable brightness. Great for workspaces, reading corners, or nightstands.",
-    quantity: 5
-  },
-  {
-    id: "3",
-    name: "Dining Chair",
-    image: "http://localhost:4000/images/products/product3.jpg",
-    price: 55.00,
-    category: { id: "1", name: "Chair" },
-    details: "Comfortable dining chair with a cushioned seat and a sturdy wooden frame. Blends well with any dining room style.",
-    quantity: 5
-  },
-  {
-    id: "4",
-    name: "Hand Base Lamp",
-    image: "http://localhost:4000/images/products/product4.jpg",
-    price: 35.00,
-    category: { id: "1", name: "Lamp" },
-    details: "A unique lamp with a sculpted hand-shaped base and a soft, warm glow. Adds a creative touch to any room.",
-    quantity: 5
-  },
-  {
-    id: "5",
-    name: "Stylish Chair",
-    image: "http://localhost:4000/images/products/product5.jpg",
-    price: 45.00,
-    category: { id: "1", name: "Chair" },
-    details: "Ergonomically designed stylish chair with a minimalist design. Ideal for offices, home desks, or lounges.",
-    quantity: 5
-  },
-  {
-    id: "6",
-    name: "Vintage Chair",
-    image: "http://localhost:4000/images/products/product6.jpg",
-    price: 65.00,
-    category: { id: "1", name: "Furniture" },
-    details: "A timeless vintage chair featuring a high-back design and classic finish. Perfect for adding character to your living space.",
-    quantity: 5
-  },
-];
 
 // Extracted categories from products
 let categories = _.uniqBy(products.map(p => p.category), 'id');
@@ -89,7 +32,7 @@ const CartItemType = new GraphQLObjectType({
   name: 'CartItems',
   fields: () => ({
     products: { type: ProductsType },
-    quantity: { type: GraphQLInt}
+    cart_item_quantity: { type: GraphQLInt}
   }),
 });
 
@@ -102,6 +45,19 @@ const CartType = new GraphQLObjectType({
     total: { type: GraphQLFloat }
   }),
 });
+
+// Create new users
+const UserType = new GraphQLObjectType({
+  name: "User",
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    email: { type: GraphQLString },
+    location: { type: GraphQLString },
+    cart: { type: CartType },
+  }),
+});
+
 
 // Root query
 const RootQuery = new GraphQLObjectType({
@@ -138,57 +94,6 @@ const RootQuery = new GraphQLObjectType({
   }
 });
 
-
-// Sample data for users
-let users = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "johndoe@gmail.com",
-    location: "Lagos",
-    password: "12345678",
-    cart: {
-      id: "cart-1",
-      items: [
-        {
-          products: {
-            id: "2",
-            name: "Lamp Tool",
-            image: "http://localhost:4000/images/products/product2.jpg",
-            price: 35.0,
-            category: { id: "1", name: "Lamp" },
-            details: "A compact and multifunctional lamp with adjustable brightness. Great for workspaces, reading corners, or nightstands.",
-          },
-          quantity: 2,
-        },
-        {
-          products: {
-            id: "5",
-            name: "Stylish Chair",
-            image: "http://localhost:4000/images/products/product5.jpg",
-            price: 45.0,
-            category: { id: "1", name: "Chair" },
-            details: "Ergonomically designed stylish chair with a minimalist design. Ideal for offices, home desks, or lounges.",
-          },
-          quantity: 1,
-        },
-      ],
-      total: 115.0, // 2 * 35 + 1 * 45
-    },
-  },
-];
-
-// Create new users
-const UserType = new GraphQLObjectType({
-  name: "User",
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    email: { type: GraphQLString },
-    location: {type: GraphQLString },
-    cart: { type: CartType },
-  }),
-});
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
