@@ -1,20 +1,70 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Schema} from 'mongoose';
 
-const UserSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  location: String,
-  password: String,
-  profilePic: String,
+export interface User extends Document {
+  name: string;
+  email: string;
+  location: string;
+  password: string;
+  profile_pic: string;
+  cart: {
+    items: {
+        product: mongoose.Schema.Types.ObjectId;
+        cart_item_quantity: number;
+      }[];
+    total: number;
+  };
+}
+
+// User schema
+
+const UserSchema: Schema = new Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address'],
+  },
+  location: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 8,
+  },
+  profile_pic: {
+    type: String,
+    required: false
+  },
   cart: {
     items: [
       {
-        product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-        cart_item_quantity: Number,
-      },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: 'Product'
+        },
+        cart_items_quantity: {
+          type: Number,
+          required: true,
+          min: 0
+        }
+      }
     ],
-    total: Number,
-  },
-});
+    total: {
+      type: Number,
+      required: true,
+      min: 0
+    }
+  }},
+  {
+    timestamps: true
+  }
+)
 
-export default mongoose.model('User', UserSchema);
+const UserModel = mongoose.model<User>('User', UserSchema);
