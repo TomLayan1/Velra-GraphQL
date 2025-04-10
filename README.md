@@ -26,11 +26,12 @@ Velra-GraphQL/
 ## Technologies Used
 
 - **Node.js**
-- **GraphQL**
-- **Express**
-- **Lodash**
-- **TypeScript**
 - **Nodemon**
+- **Mongodb**
+- **Express**
+- **TypeScript**
+- **GraphQL**
+- **Lodash**
 
 ## Installation
 
@@ -46,18 +47,20 @@ npm install --legacy-peer-deps
 ```bash
 npm run dev
 ```
-Server will run on: http://localhost:4000/graphql
+Server will run on: http://localhost:5000/graphql
 
 # To Do
 - Add authentication with JWT
 
-- Implement user login
+- Implement user signup & login
 
 - Enable cart updates (add/remove items)
 
-- Connect to a real database (MongoDB)
+- Connect to a database (MongoDB)
 
 - Build a frontend for interaction
+  
+- Build a dashboard to manage the app
 
 # Author
 TomLayan
