@@ -8,6 +8,7 @@ import path from 'path';
 // Initialize express app
 const app = express();
 
+
 const MONGODB = 'mongodb+srv://tomisin:password%401%402%25@velracluster.trjwqtg.mongodb.net/?retryWrites=true&w=majority&appName=VelraCluster';
 mongoose.connect(MONGODB);
 

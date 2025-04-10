@@ -1,9 +1,11 @@
+import { profile } from "console";
+
 // Sample data
 export let products = [
   {
     id: "1",
     name: "Stackable Chair",
-    image: "http://localhost:4000/images/products/product1.jpg",
+    product_image: "http://localhost:5000/images/products/product1.jpg",
     price: 87.00,
     category: { id: "1", name: "Chair" },
     details: "A sleek and modern stackable chair perfect for both indoor and outdoor settings. Lightweight yet sturdy, ideal for compact storage.",
@@ -12,7 +14,7 @@ export let products = [
   {
     id: "2",
     name: "Lamp Tool",
-    image: "http://localhost:4000/images/products/product2.jpg",
+    product_image: "http://localhost:5000/images/products/product2.jpg",
     price: 35.00,
     category: { id: "1", name: "Lamp" },
     details: "A compact and multifunctional lamp with adjustable brightness. Great for workspaces, reading corners, or nightstands.",
@@ -21,7 +23,7 @@ export let products = [
   {
     id: "3",
     name: "Dining Chair",
-    image: "http://localhost:4000/images/products/product3.jpg",
+    product_image: "http://localhost:5000/images/products/product3.jpg",
     price: 55.00,
     category: { id: "1", name: "Chair" },
     details: "Comfortable dining chair with a cushioned seat and a sturdy wooden frame. Blends well with any dining room style.",
@@ -30,7 +32,7 @@ export let products = [
   {
     id: "4",
     name: "Hand Base Lamp",
-    image: "http://localhost:4000/images/products/product4.jpg",
+    product_image: "http://localhost:5000/images/products/product4.jpg",
     price: 35.00,
     category: { id: "1", name: "Lamp" },
     details: "A unique lamp with a sculpted hand-shaped base and a soft, warm glow. Adds a creative touch to any room.",
@@ -39,7 +41,7 @@ export let products = [
   {
     id: "5",
     name: "Stylish Chair",
-    image: "http://localhost:4000/images/products/product5.jpg",
+    product_image: "http://localhost:5000/images/products/product5.jpg",
     price: 45.00,
     category: { id: "1", name: "Chair" },
     details: "Ergonomically designed stylish chair with a minimalist design. Ideal for offices, home desks, or lounges.",
@@ -48,7 +50,7 @@ export let products = [
   {
     id: "6",
     name: "Vintage Chair",
-    image: "http://localhost:4000/images/products/product6.jpg",
+    product_image: "http://localhost:5000/images/products/product6.jpg",
     price: 65.00,
     category: { id: "1", name: "Furniture" },
     details: "A timeless vintage chair featuring a high-back design and classic finish. Perfect for adding character to your living space.",
@@ -64,6 +66,7 @@ export let users = [
     email: "johndoe@gmail.com",
     location: "Lagos",
     password: "12345678",
+    profile_pic: "",
     cart: {
       id: "cart-1",
       items: [
@@ -71,7 +74,7 @@ export let users = [
           products: {
             id: "2",
             name: "Lamp Tool",
-            image: "http://localhost:4000/images/products/product2.jpg",
+            product_image: "http://localhost:5000/images/products/product2.jpg",
             price: 35.0,
             category: { id: "1", name: "Lamp" },
             details: "A compact and multifunctional lamp with adjustable brightness. Great for workspaces, reading corners, or nightstands.",
@@ -82,7 +85,7 @@ export let users = [
           products: {
             id: "5",
             name: "Stylish Chair",
-            image: "http://localhost:4000/images/products/product5.jpg",
+            product_image: "http://localhost:5000/images/products/product5.jpg",
             price: 45.0,
             category: { id: "1", name: "Chair" },
             details: "Ergonomically designed stylish chair with a minimalist design. Ideal for offices, home desks, or lounges.",

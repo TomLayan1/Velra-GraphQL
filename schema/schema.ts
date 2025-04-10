@@ -2,6 +2,7 @@ import { GraphQLSchema } from 'graphql';
 import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList, GraphQLFloat, GraphQLInt } from 'graphql';
 import { products, users } from '../data';
 import _ from 'lodash'
+import { profile } from 'console';
 
 // Extracted categories from products
 let categories = _.uniqBy(products.map(p => p.category), 'id');
@@ -20,7 +21,7 @@ const ProductsType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    image: { type: GraphQLString },
+    product_image: { type: GraphQLString },
     price: { type: GraphQLFloat },
     category: { type: CategoryType },
     details: { type: GraphQLString },
@@ -53,6 +54,8 @@ const UserType = new GraphQLObjectType({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
     email: { type: GraphQLString },
+    password: { type: GraphQLString },
+    profile_pic: { type: GraphQLString }, 
     location: { type: GraphQLString },
     cart: { type: CartType },
   }),
@@ -98,6 +101,7 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
+    // Mutation for creating new user
     registerUser: {
       type: UserType,
       args: {
@@ -105,6 +109,7 @@ const Mutation = new GraphQLObjectType({
         email: { type: GraphQLString },
         location: { type: GraphQLString },
         password: { type: GraphQLString },
+        profile_pic: { type: GraphQLString }
       },
       resolve(parent, args) {
         const newUser = {
@@ -113,6 +118,7 @@ const Mutation = new GraphQLObjectType({
           email: args?.email,
           location: args?.location,
           password: args?.password,
+          profile_pic: args?.profile_pic,
           cart: {
             id: `cart-${users.length + 1}`,
             items: [],
@@ -123,6 +129,32 @@ const Mutation = new GraphQLObjectType({
         return newUser;
       },
     },
+
+    // Mutation for uploading new products
+    uploadProduct: {
+      type: ProductsType,
+      args: {
+        name: { type: GraphQLString },
+        product_image: { type: GraphQLString },
+        price: { type: GraphQLFloat },
+        category: { type: GraphQLString },
+        details: { type: GraphQLString },
+        quantity: { type: GraphQLInt },
+      },
+      resolve(parent, args) {
+        const newProduct = {
+          id: String(products.length + 1),
+          name: args?.name,
+          product_image: args?.product_image,
+          price: args?.price,
+          category: args?.category,
+          details: args?.details,
+          quantity: args?.quantity
+        };
+        products.push(newProduct);
+        return newProduct;
+      }
+    }
   },
 });
 
