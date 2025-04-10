@@ -16,7 +16,6 @@ export interface User extends Document {
 }
 
 // User schema
-
 const UserSchema: Schema = new Schema({
   name: {
     type: String,
@@ -68,3 +67,4 @@ const UserSchema: Schema = new Schema({
 )
 
 const UserModel = mongoose.model<User>('User', UserSchema);
+export default UserModel;
