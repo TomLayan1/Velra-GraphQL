@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema} from "mongoose";
 
-export interface CartItemModel extends Document {
+export interface CartItem extends Document {
   product: mongoose.Types.ObjectId;
   cart_item_quantity: number;
 }
@@ -17,3 +17,7 @@ const CartItemSchema: Schema = new Schema({
     required: true,
   }
 })
+
+const CartItemModel = mongoose.model<CartItem>('CartItem', CartItemSchema);
+
+export default CartItemModel;
