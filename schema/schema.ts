@@ -2,7 +2,7 @@ import { GraphQLSchema } from 'graphql';
 import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList, GraphQLFloat, GraphQLInt } from 'graphql';
 import { products, users } from '../data';
 import _ from 'lodash'
-import { profile } from 'console';
+// import { profile } from 'console';
 
 // Extracted categories from products
 let categories = _.uniqBy(products.map(p => p.category), 'id');
@@ -37,7 +37,6 @@ const CartItemType = new GraphQLObjectType({
   }),
 });
 
-
 const CartType = new GraphQLObjectType({
   name: 'Cart',
   fields: () => ({
@@ -47,7 +46,20 @@ const CartType = new GraphQLObjectType({
   }),
 });
 
-// Create new users
+
+// Order type
+const OrderType = new GraphQLObjectType({
+  name: 'Order',
+  fields: () => ({
+    id: { type: GraphQLID },
+    user: { type: UserType },
+    items: { type: new GraphQLList(CartItemType) },
+    total: { type: GraphQLFloat },
+    createdAt: { type: GraphQLString },
+  }),
+});
+
+// User type
 const UserType = new GraphQLObjectType({
   name: "User",
   fields: () => ({
@@ -60,6 +72,7 @@ const UserType = new GraphQLObjectType({
     cart: { type: CartType },
   }),
 });
+
 
 
 // Root query
@@ -92,6 +105,12 @@ const RootQuery = new GraphQLObjectType({
       args: { categoryId: { type: GraphQLID }},
       resolve(parent, args) {
         return products?.filter(p => p.category?.id === args?.id)
+      }
+    },
+    order: {
+      type: new GraphQLList(OrderType),
+      resolve(parent, args) {
+        
       }
     }
   }
