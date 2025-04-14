@@ -61,7 +61,7 @@ export let products = [
 // Sample data for users
 export let users = [
   {
-    id: "1",
+    user_id: "1",
     name: "John Doe",
     email: "johndoe@gmail.com",
     location: "Lagos",
@@ -71,25 +71,21 @@ export let users = [
       id: "cart-1",
       items: [
         {
-          products: {
-            id: "2",
-            name: "Lamp Tool",
-            product_image: "http://localhost:5000/images/products/product2.jpg",
-            price: 35.0,
-            category: { id: "1", name: "Lamp" },
-            details: "A compact and multifunctional lamp with adjustable brightness. Great for workspaces, reading corners, or nightstands.",
-          },
+          id: "2",
+          name: "Lamp Tool",
+          product_image: "http://localhost:5000/images/products/product2.jpg",
+          price: 35.0,
+          category: { id: "1", name: "Lamp" },
+          details: "A compact and multifunctional lamp with adjustable brightness. Great for workspaces, reading corners, or nightstands.",
           cart_item_quantity: 2,
         },
         {
-          products: {
-            id: "5",
-            name: "Stylish Chair",
-            product_image: "http://localhost:5000/images/products/product5.jpg",
-            price: 45.0,
-            category: { id: "1", name: "Chair" },
-            details: "Ergonomically designed stylish chair with a minimalist design. Ideal for offices, home desks, or lounges.",
-          },
+          id: "5",
+          name: "Stylish Chair",
+          product_image: "http://localhost:5000/images/products/product5.jpg",
+          price: 45.0,
+          category: { id: "1", name: "Chair" },
+          details: "Ergonomically designed stylish chair with a minimalist design. Ideal for offices, home desks, or lounges.",
           cart_item_quantity: 1,
         },
       ],
@@ -97,3 +93,35 @@ export let users = [
     },
   },
 ];
+
+// Sample Data for orders
+export const orders = [
+  {
+    user: "",
+    items: [
+      {
+        products: {
+          id: "2",
+          name: "Lamp Tool",
+          product_image: "http://localhost:5000/images/products/product2.jpg",
+          price: 35.0,
+          category: { id: "1", name: "Lamp" },
+          details: "A compact and multifunctional lamp with adjustable brightness. Great for workspaces, reading corners, or nightstands.",
+        },
+        cart_item_quantity: 2,
+      },
+      {
+        products: {
+          id: "5",
+          name: "Stylish Chair",
+          product_image: "http://localhost:5000/images/products/product5.jpg",
+          price: 45.0,
+          category: { id: "1", name: "Chair" },
+          details: "Ergonomically designed stylish chair with a minimalist design. Ideal for offices, home desks, or lounges.",
+        },
+        cart_item_quantity: 1,
+      },
+    ],
+    total: 115.0,
+  }
+]

@@ -2,6 +2,12 @@ import { GraphQLSchema } from 'graphql';
 import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList, GraphQLFloat, GraphQLInt } from 'graphql';
 import { products, users } from '../data';
 import _ from 'lodash'
+import { CartModel } from '../models/cartModel';
+import { CartItemModel } from '../models/cartItemModel';
+import { CategoryModel } from '../models/categoryModel';
+import { OrderModel } from '../models/orderModel';
+import { ProductModel } from '../models/productsModel';
+import { UserModel } from '../models/usersModel';
 // import { profile } from 'console';
 
 // Extracted categories from products
@@ -16,14 +22,14 @@ const CategoryType  = new GraphQLObjectType({
   }),
 });
 
-const ProductsType = new GraphQLObjectType({
+const ProductType = new GraphQLObjectType({
   name: 'Products',
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
     product_image: { type: GraphQLString },
     price: { type: GraphQLFloat },
-    category: { type: CategoryType },
+    category: { type: GraphQLString },
     details: { type: GraphQLString },
     quantity: { type: GraphQLInt}
   }),
@@ -32,8 +38,13 @@ const ProductsType = new GraphQLObjectType({
 const CartItemType = new GraphQLObjectType({
   name: 'CartItems',
   fields: () => ({
-    products: { type: ProductsType },
-    cart_item_quantity: { type: GraphQLInt}
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    product_image: { type: GraphQLString },
+    price: { type: GraphQLFloat },
+    category: { type: CategoryType },
+    details: { type: GraphQLString },
+    cart_item_quantity: { type: GraphQLInt }
   }),
 });
 
@@ -55,7 +66,6 @@ const OrderType = new GraphQLObjectType({
     user: { type: UserType },
     items: { type: new GraphQLList(CartItemType) },
     total: { type: GraphQLFloat },
-    createdAt: { type: GraphQLString },
   }),
 });
 
@@ -63,7 +73,7 @@ const OrderType = new GraphQLObjectType({
 const UserType = new GraphQLObjectType({
   name: "User",
   fields: () => ({
-    id: { type: GraphQLID },
+    user_id: { type: GraphQLID },
     name: { type: GraphQLString },
     email: { type: GraphQLString },
     password: { type: GraphQLString },
@@ -74,19 +84,18 @@ const UserType = new GraphQLObjectType({
 });
 
 
-
 // Root query
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
     products: {
-      type: new GraphQLList(ProductsType),
+      type: new GraphQLList(ProductType),
       resolve() {
         return products
       }
     },
     product: {
-      type: ProductsType,
+      type: ProductType,
       args: { id: { type: GraphQLID }},
       resolve(parent, args) {
         console.log(typeof(args?.id))
@@ -101,7 +110,7 @@ const RootQuery = new GraphQLObjectType({
       }
     },
     productsByCategory: {
-      type: new GraphQLList(ProductsType),
+      type: new GraphQLList(ProductType),
       args: { categoryId: { type: GraphQLID }},
       resolve(parent, args) {
         return products?.filter(p => p.category?.id === args?.id)
@@ -110,7 +119,7 @@ const RootQuery = new GraphQLObjectType({
     order: {
       type: new GraphQLList(OrderType),
       resolve(parent, args) {
-        
+        return OrderModel?.find();
       }
     }
   }
@@ -130,9 +139,9 @@ const Mutation = new GraphQLObjectType({
         password: { type: GraphQLString },
         profile_pic: { type: GraphQLString }
       },
-      resolve(parent, args) {
-        const newUser = {
-          id: String(users.length + 1),
+      resolve: async (parent, args) => {
+        let newUser = new UserModel({
+          user_id: String(users.length + 1),
           name: args?.name,
           email: args?.email,
           location: args?.location,
@@ -143,15 +152,29 @@ const Mutation = new GraphQLObjectType({
             items: [],
             total: 0,
           },
-        };
-        users.push(newUser);
-        return newUser;
+        });
+        return await newUser.save()
       },
+    },
+
+    // Mutation for uploading new category
+    addCategory: {
+      type: CategoryType,
+      args: {
+        name: { type: GraphQLString }
+      },
+      resolve: async (parent, args) => {
+        const newCategory = new CategoryModel({
+          id: String(categories?.length + 1),
+          name: args?.name
+        });
+        return await newCategory.save();
+      }
     },
 
     // Mutation for uploading new products
     uploadProduct: {
-      type: ProductsType,
+      type: ProductType,
       args: {
         name: { type: GraphQLString },
         product_image: { type: GraphQLString },
@@ -160,8 +183,8 @@ const Mutation = new GraphQLObjectType({
         details: { type: GraphQLString },
         quantity: { type: GraphQLInt },
       },
-      resolve(parent, args) {
-        const newProduct = {
+      resolve: async(parent, args) => {
+        const newProduct = new ProductModel ({
           id: String(products.length + 1),
           name: args?.name,
           product_image: args?.product_image,
@@ -169,9 +192,38 @@ const Mutation = new GraphQLObjectType({
           category: args?.category,
           details: args?.details,
           quantity: args?.quantity
-        };
-        products.push(newProduct);
-        return newProduct;
+        });
+        return await newProduct.save();
+      }
+    },
+
+    // Mutation for orders
+    addOrder: {
+      type: OrderType,
+      args: {
+        user_id: { type: GraphQLID },
+        items: { type: new GraphQLList(GraphQLID) },
+        total: { type: GraphQLFloat },
+      },
+      resolve: async(parent, args) => {
+        // Fetch user by ID
+        const user = await UserModel.findById(args?.user_id);
+        if (!user) {
+          throw new Error('User not found');
+        }
+        
+        // fetch full cart items if using item IDs
+        const cartItems = await CartItemModel.find({ _id: { $in: args.items } });
+
+        // Create order
+        const newOrder = new OrderModel({
+          user: user._id,
+          items: cartItems,
+          total: args.total,
+          createdAt: new Date().toISOString(),
+        });
+
+        return await newOrder.save();
       }
     }
   },

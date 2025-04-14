@@ -60,10 +60,7 @@ const UserSchema: Schema = new Schema({
       required: true,
       min: 0
     }
-  }},
-  {
-    timestamps: true
-  }
+  }}
 )
 
 export const UserModel = mongoose.model<User>('User', UserSchema);

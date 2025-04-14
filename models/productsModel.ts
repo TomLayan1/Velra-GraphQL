@@ -4,7 +4,7 @@ export interface Product extends Document {
   name: string;
   product_image: string;
   price: number;
-  category: mongoose.Schema.Types.ObjectId;
+  category: string;
   details: string;
   quantity: number;
 }
@@ -25,8 +25,7 @@ const ProductsSchema: Schema = new Schema({
     min: 0
   },
   category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
+    type: String,
     required: true
   },
   details: {
@@ -37,10 +36,7 @@ const ProductsSchema: Schema = new Schema({
     type: Number,
     required: true,
     min: 0
-  }},
-  {
-    timestamps: true
-  }
+  }}
 );
 
 export const ProductModel = mongoose.model<Product>('Product', ProductsSchema);
