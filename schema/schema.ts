@@ -42,7 +42,7 @@ const CartItemType = new GraphQLObjectType({
     name: { type: GraphQLString },
     product_image: { type: GraphQLString },
     price: { type: GraphQLFloat },
-    category: { type: CategoryType },
+    category: { type: GraphQLString },
     details: { type: GraphQLString },
     cart_item_quantity: { type: GraphQLInt }
   }),

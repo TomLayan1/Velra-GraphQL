@@ -75,7 +75,7 @@ export let users = [
           name: "Lamp Tool",
           product_image: "http://localhost:5000/images/products/product2.jpg",
           price: 35.0,
-          category: { id: "1", name: "Lamp" },
+          category: "Lamp",
           details: "A compact and multifunctional lamp with adjustable brightness. Great for workspaces, reading corners, or nightstands.",
           cart_item_quantity: 2,
         },
@@ -84,12 +84,12 @@ export let users = [
           name: "Stylish Chair",
           product_image: "http://localhost:5000/images/products/product5.jpg",
           price: 45.0,
-          category: { id: "1", name: "Chair" },
+          category: "Chair",
           details: "Ergonomically designed stylish chair with a minimalist design. Ideal for offices, home desks, or lounges.",
           cart_item_quantity: 1,
         },
       ],
-      total: 115.0, // 2 * 35 + 1 * 45
+      total: 115.0,
     },
   },
 ];
@@ -97,7 +97,7 @@ export let users = [
 // Sample Data for orders
 export const orders = [
   {
-    user: "",
+    user_id: "1",
     items: [
       {
         products: {
