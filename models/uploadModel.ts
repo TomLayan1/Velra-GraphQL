@@ -9,7 +9,7 @@ export interface Upload extends Document {
 const UploadSchema = new Schema({
   filename: {
     type: String,
-    required: true
+    required: false
   },
   path: {
     type: String,
