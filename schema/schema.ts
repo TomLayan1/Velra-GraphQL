@@ -161,6 +161,13 @@ const Mutation = new GraphQLObjectType({
         });
         await newUpload.save();
 
+        // Create cart first and save to DB
+        const newCart = new CartModel({
+          items: [],
+          total: 0
+        });
+        const savedCart = await newCart.save();
+
         let newUser = new UserModel({
           id: String(users.length + 1),
           name: args?.name,
@@ -168,11 +175,7 @@ const Mutation = new GraphQLObjectType({
           location: args?.location,
           password: args?.password,
           profile_pic: profilePath,
-          cart: {
-            id: `cart-${users.length + 1}`,
-            items: [],
-            total: 0,
-          },
+          cart: savedCart?._id,
         });
         return await newUser.save()
       },
