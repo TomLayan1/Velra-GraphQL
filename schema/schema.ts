@@ -108,9 +108,8 @@ const RootQuery = new GraphQLObjectType({
     product: {
       type: ProductType,
       args: { id: { type: GraphQLID }},
-      resolve(parent, args) {
-        // Function to get data from db
-        return _.find(products, {id: args?.id})
+      resolve: async (parent, args) => {
+        return await ProductModel.findById(args.id);
       }
     },
     categories: {
@@ -124,6 +123,22 @@ const RootQuery = new GraphQLObjectType({
       args: { categoryId: { type: GraphQLID }},
       resolve(parent, args) {
         return products?.filter(p => p.category?.id === args?.id)
+      }
+    },
+    searchProductsByCategory: {
+      type: new GraphQLList(ProductType),
+      args: { category: { type: GraphQLString } },
+      resolve: async (parent, args) => {
+        return await ProductModel.find({ category: args.category });
+      }
+    },
+    searchProductsByName: {
+      type: new GraphQLList(ProductType),
+      args: { name: { type: GraphQLString } },
+      resolve: async (parent, args) => {
+        return await ProductModel.find({
+          name: { $regex: args.name, $options: 'i' } // Case-insensitive search
+        });
       }
     },
     order: {
