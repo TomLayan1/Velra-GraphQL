@@ -15,7 +15,7 @@ let categories = _.uniqBy(products.map(p => p.category), 'id');
 
 // GraphQL types
 const CategoryType  = new GraphQLObjectType({
-  name: 'Categories',
+  name: 'Category',
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString }
@@ -36,7 +36,7 @@ const ProductType = new GraphQLObjectType({
 });
 
 const CartItemType = new GraphQLObjectType({
-  name: 'CartItems',
+  name: 'CartItem',
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
@@ -44,7 +44,7 @@ const CartItemType = new GraphQLObjectType({
     price: { type: GraphQLFloat },
     category: { type: GraphQLString },
     details: { type: GraphQLString },
-    cart_item_quantity: { type: GraphQLInt }
+    item_quantity: { type: GraphQLInt }
   }),
 });
 
@@ -73,14 +73,14 @@ const OrderType = new GraphQLObjectType({
 const UserType = new GraphQLObjectType({
   name: "User",
   fields: () => ({
-    user_id: { type: GraphQLID },
+    id: { type: GraphQLID },
     name: { type: GraphQLString },
     email: { type: GraphQLString },
     password: { type: GraphQLString },
-    profile_pic: { type: GraphQLString }, 
+    profile_pic: { type: GraphQLString },
     location: { type: GraphQLString },
     cart: { type: CartType },
-  }),
+  })
 });
 
 
@@ -141,7 +141,7 @@ const Mutation = new GraphQLObjectType({
       },
       resolve: async (parent, args) => {
         let newUser = new UserModel({
-          user_id: String(users.length + 1),
+          id: String(users.length + 1),
           name: args?.name,
           email: args?.email,
           location: args?.location,
@@ -217,10 +217,9 @@ const Mutation = new GraphQLObjectType({
 
         // Create order
         const newOrder = new OrderModel({
-          user: user._id,
+          user_id: args?.id,
           items: cartItems,
           total: args.total,
-          createdAt: new Date().toISOString(),
         });
 
         return await newOrder.save();
