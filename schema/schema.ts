@@ -8,7 +8,8 @@ import { CategoryModel } from '../models/categoryModel';
 import { OrderModel } from '../models/orderModel';
 import { ProductModel } from '../models/productsModel';
 import { UserModel } from '../models/usersModel';
-// import { profile } from 'console';
+import { UploadModel } from '../models/uploadModel';
+import upload from '../middleware/uploads';
 
 // Extracted categories from products
 let categories = _.uniqBy(products.map(p => p.category), 'id');
@@ -57,7 +58,6 @@ const CartType = new GraphQLObjectType({
   }),
 });
 
-
 // Order type
 const OrderType = new GraphQLObjectType({
   name: 'Order',
@@ -83,6 +83,17 @@ const UserType = new GraphQLObjectType({
   })
 });
 
+const UploadType = new GraphQLObjectType({
+  name: 'Upload',
+  fields: () => ({
+    id: { type: GraphQLID },
+    filename: { type: GraphQLString },
+    path: { type: GraphQLString },
+    type: { type: GraphQLString }
+  })
+});
+
+
 
 // Root query
 const RootQuery = new GraphQLObjectType({
@@ -98,7 +109,6 @@ const RootQuery = new GraphQLObjectType({
       type: ProductType,
       args: { id: { type: GraphQLID }},
       resolve(parent, args) {
-        console.log(typeof(args?.id))
         // Function to get data from db
         return _.find(products, {id: args?.id})
       }
@@ -121,10 +131,13 @@ const RootQuery = new GraphQLObjectType({
       resolve(parent, args) {
         return OrderModel?.find();
       }
+    },
+    uploads: {
+      type: new GraphQLList(UploadType),
+      resolve: () => UploadModel?.find()
     }
   }
 });
-
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
@@ -140,13 +153,21 @@ const Mutation = new GraphQLObjectType({
         profile_pic: { type: GraphQLString }
       },
       resolve: async (parent, args) => {
+        const profilePath = `/uploads/users/${args.profile_pic}`;
+        const newUpload = new UploadModel({
+          filename: args.profile_pic,
+          path: profilePath,
+          type: 'image/png'
+        });
+        await newUpload.save();
+
         let newUser = new UserModel({
           id: String(users.length + 1),
           name: args?.name,
           email: args?.email,
           location: args?.location,
           password: args?.password,
-          profile_pic: args?.profile_pic,
+          profile_pic: profilePath,
           cart: {
             id: `cart-${users.length + 1}`,
             items: [],
@@ -184,10 +205,18 @@ const Mutation = new GraphQLObjectType({
         quantity: { type: GraphQLInt },
       },
       resolve: async(parent, args) => {
+        const profilePath = `/uploads/products/${args.profile_pic}`;
+        const newUpload = new UploadModel({
+          filename: args.profile_pic,
+          path: profilePath,
+          type: 'image/png'
+        });
+        await newUpload.save();
+
         const newProduct = new ProductModel ({
           id: String(products.length + 1),
           name: args?.name,
-          product_image: args?.product_image,
+          product_image: profilePath,
           price: args?.price,
           category: args?.category,
           details: args?.details,
