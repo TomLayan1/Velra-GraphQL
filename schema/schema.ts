@@ -1,4 +1,4 @@
-import { GraphQLSchema } from 'graphql';
+import { GraphQLNonNull, GraphQLSchema } from 'graphql';
 import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList, GraphQLFloat, GraphQLInt } from 'graphql';
 import { products, users } from '../data';
 import _ from 'lodash'
@@ -161,10 +161,10 @@ const Mutation = new GraphQLObjectType({
     registerUser: {
       type: UserType,
       args: {
-        name: { type: GraphQLString },
-        email: { type: GraphQLString },
-        location: { type: GraphQLString },
-        password: { type: GraphQLString },
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        location: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) },
         profile_pic: { type: GraphQLString }
       },
       resolve: async (parent, args) => {
@@ -200,7 +200,7 @@ const Mutation = new GraphQLObjectType({
     addCategory: {
       type: CategoryType,
       args: {
-        name: { type: GraphQLString }
+        name: { type: new GraphQLNonNull(GraphQLString) }
       },
       resolve: async (parent, args) => {
         const newCategory = new CategoryModel({
@@ -215,11 +215,11 @@ const Mutation = new GraphQLObjectType({
     uploadProduct: {
       type: ProductType,
       args: {
-        name: { type: GraphQLString },
+        name: { type: new GraphQLNonNull(GraphQLString) },
         product_image: { type: GraphQLString },
-        price: { type: GraphQLFloat },
-        category: { type: GraphQLString },
-        details: { type: GraphQLString },
+        price: { type: new GraphQLNonNull(GraphQLFloat) },
+        category: { type: new GraphQLNonNull(GraphQLString) },
+        details: { type: new GraphQLNonNull(GraphQLString) },
         quantity: { type: GraphQLInt },
       },
       resolve: async(parent, args) => {
@@ -248,9 +248,9 @@ const Mutation = new GraphQLObjectType({
     addOrder: {
       type: OrderType,
       args: {
-        user_id: { type: GraphQLID },
-        items: { type: new GraphQLList(GraphQLID) },
-        total: { type: GraphQLFloat },
+        user_id: { type: new GraphQLNonNull(GraphQLID) },
+        items: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
+        total: { type: new GraphQLNonNull(GraphQLFloat) },
       },
       resolve: async(parent, args) => {
         // Fetch user by ID
