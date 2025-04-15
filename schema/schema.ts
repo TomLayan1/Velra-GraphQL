@@ -193,7 +193,7 @@ const Mutation = new GraphQLObjectType({
           location: args?.location,
           password: args?.password,
           profile_pic: profilePath || "",
-          cart: savedCart?._id || [],
+          cart: savedCart?._id,
         });
         return await newUser.save()
       },
@@ -207,7 +207,6 @@ const Mutation = new GraphQLObjectType({
       },
       resolve: async (parent, args) => {
         const newCategory = new CategoryModel({
-          id: String(categories?.length + 1),
           name: args?.name
         });
         return await newCategory.save();
