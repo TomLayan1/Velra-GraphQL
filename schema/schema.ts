@@ -10,6 +10,7 @@ import { ProductModel } from '../models/productsModel';
 import { UserModel } from '../models/usersModel';
 import { UploadModel } from '../models/uploadModel';
 import upload from '../middleware/uploads';
+import mongoose from 'mongoose';
 
 // Extracted categories from products
 let categories = _.uniqBy(products.map(p => p.category), 'id');
@@ -168,29 +169,31 @@ const Mutation = new GraphQLObjectType({
         profile_pic: { type: GraphQLString }
       },
       resolve: async (parent, args) => {
-        const profilePath = `/uploads/users/${args.profile_pic}`;
-        const newUpload = new UploadModel({
-          filename: args.profile_pic,
-          path: profilePath,
-          type: 'image/png'
-        });
-        await newUpload.save();
+        let profilePath = '';
+        if (args?.profile_pic) {
+          profilePath = `/uploads/users/${args?.profile_pic}`;
+          const newUpload = new UploadModel({
+            filename: args.profile_pic,
+            path: profilePath,
+            type: 'image/png'
+          });
+          await newUpload.save();
+        }
 
         // Create cart first and save to DB
         const newCart = new CartModel({
-          items: [],
+          items: [] as any[],
           total: 0
         });
         const savedCart = await newCart.save();
 
         let newUser = new UserModel({
-          id: String(users.length + 1),
           name: args?.name,
           email: args?.email,
           location: args?.location,
           password: args?.password,
-          profile_pic: profilePath,
-          cart: savedCart?._id,
+          profile_pic: profilePath || "",
+          cart: savedCart?._id || [],
         });
         return await newUser.save()
       },
@@ -223,13 +226,16 @@ const Mutation = new GraphQLObjectType({
         quantity: { type: GraphQLInt },
       },
       resolve: async(parent, args) => {
-        const profilePath = `/uploads/products/${args.profile_pic}`;
-        const newUpload = new UploadModel({
-          filename: args.profile_pic,
-          path: profilePath,
-          type: 'image/png'
-        });
-        await newUpload.save();
+        let profilePath = '';
+        if (args?.product_image) {
+          profilePath = `/uploads/products/${args?.product_image}`;
+          const newUpload = new UploadModel({
+            filename: args.profile_pic,
+            path: profilePath || null,
+            type: 'image/png'
+          });
+          await newUpload.save();
+        }
 
         const newProduct = new ProductModel ({
           id: String(products.length + 1),

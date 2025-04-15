@@ -6,13 +6,16 @@ export interface Cart extends Document {
 }
 
 const CartSchema: Schema = new Schema({
-  items: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'CartItem'
-  },
+  items: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'CartItem'
+    }
+  ],
   total: {
     type: Number,
-    required: true
+    required: true,
+    default: 0
   }
 })
 

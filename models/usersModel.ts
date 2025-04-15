@@ -41,25 +41,8 @@ const UserSchema: Schema = new Schema({
     required: false
   },
   cart: {
-    items: [
-      {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          required: true,
-          ref: 'Product'
-        },
-        cart_items_quantity: {
-          type: Number,
-          required: true,
-          min: 0
-        }
-      }
-    ],
-    total: {
-      type: Number,
-      required: true,
-      min: 0
-    }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Cart',
   }}
 )
 
